@@ -3,3 +3,6 @@ require 'models/player.rb'
 require 'controllers/game_controller.rb'
 require 'views/view.rb'
 
+# games = Master.new(ARGV.first)
+# games.play
+
