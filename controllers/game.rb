@@ -7,9 +7,8 @@ class Game
   end
 
   def play
-  end
-
-  def compare_hands
+    winner, rank, tie = compare_hands
+    View.output(winner: winner, rank: rank, tie: tie)
   end
 
   private
@@ -35,6 +34,9 @@ class Game
 
   def generate_card(text)
     Card.new(value: text[0], suit: text[1])
+  end
+
+  def compare_hands
   end
 
 end
