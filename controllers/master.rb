@@ -5,7 +5,8 @@ class Master
     parse(filename)
   end
 
-  def play
+  def play_all
+    @games.each { |game| game.play }
   end
 
   private
@@ -13,8 +14,7 @@ class Master
   def parse(filename)
     file = File.new(filename, "r")
     text = file.read
-    text.each_line.do |line|
-      @games << Game.new(line)
+    text.each_line { |line| @games << Game.new(line) }
     file.close
   end
 

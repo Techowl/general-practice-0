@@ -2,7 +2,11 @@ class Game
 
   def initialize(text_line)
     @players = []
+    @winner = nil
     parse(text_line)
+  end
+
+  def play
   end
 
   def compare_hands
@@ -19,12 +23,13 @@ class Game
 
   def generate_player(text)
     name_and_cards = text.split(' ')
-    name = name_and_cards.shift
+    name_with_colon = name_and_cards.shift
+    name = name_with_colon[0..(name_with_colon.length - 2)]
     cards = name_and_cards.dup
     @players << Player.new(name: name, hand: generate_hand(cards))
   end
 
-  def generate_hand
+  def generate_hand(cards)
     cards.map { |card| generate_card(card) }
   end
 
