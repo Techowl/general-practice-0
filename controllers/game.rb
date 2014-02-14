@@ -11,8 +11,7 @@ class Game
   end
 
   def play
-    winner, rank, tie = compare_hands
-    View.output(winner: winner, rank: rank, tie: tie)
+    View.output(compare_hands)
   end
 
   private
@@ -41,6 +40,9 @@ class Game
   end
 
   def compare_hands
+    # IMPLEMENT
+    # first compare rank; if same, compare cascading ids; if same, tie
+    # return hash with keys tie, winning_card, rank, winner
   end
 
 end
