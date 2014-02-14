@@ -70,7 +70,7 @@ class Player
   def get_ordered_id_num_pairs(num_by_card_id)
     id_num_pairs = []
     num_by_card_id.each { |id, num| id_num_pairs << [id, num] }
-    id_num_pairs.sort_by! { |id, num| num + (id / 15.0) }
+    id_num_pairs.sort_by! { |id, num| num + (id / 15.0) }.reverse
   end
 
   def get_values_as_sorted_ids

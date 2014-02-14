@@ -13,11 +13,11 @@ class View
   def self.output(args)
     if args[:tie]
       puts "Tie."
-    elsif [:winning_card_id]
+    elsif args[:winning_card_id]
       puts "#{args[:winner]} wins. - with #{HAND_NAMES[args[:rank]]}: " +
            "#{CARD_IDS_TO_VALUES[args[:winning_card_id]]}"
     else
-      puts "#{args[:winner]} wins. - with #{args[:rank]}"
+      puts "#{args[:winner]} wins. - with #{HAND_NAMES[args[:rank]]}"
     end
   end
 

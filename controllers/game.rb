@@ -2,7 +2,10 @@ class Game
 
   def initialize(text_line)
     @players = []
+    @tie = false
     @winner = nil
+    @winning_rank = nil
+    @winning_card_id = nil
     parse(text_line)
   end
 
@@ -36,32 +39,31 @@ class Game
   end
 
   def compare_hands
-    tie, winning_card_id = false, nil
     player_1, player_2 = @players[0], @players[1]
     if player_1.rank > player_2.rank
-      winner, rank = player_1.name, player_1.rank
+      @winner, @winning_rank = player_1.name, player_1.rank
     elsif player_2.rank > player_1.rank
-      winner, rank = player_2.name, player_2.rank
+      @winner, @winning_rank = player_2.name, player_2.rank
     else
-      rank = player_1.rank
+      @winning_rank = player_1.rank
       if player_1.cascading_ids == player_2.cascading_ids
-        tie = true
+        @tie = true
       else
         player_1.cascading_ids.each_with_index do |p1_id, index|
           p2_id = player_2.cascading_ids[index]
           if p1_id > p2_id
-            winner = player_1.name
-            winning_card_id = p1_id if index = 0
+            @winner = player_1.name
+            @winning_card_id = p1_id
             break
           elsif p2_id > p1_id
-            winner = player_2.name
-            winning_card_id = p2_id if index = 0
+            @winner = player_2.name
+            @winning_card_id = p2_id
             break
           end
         end
       end
     end
-    {winner: winner, rank: rank, tie: tie, winning_card_id: winning_card_id}
+    {winner: @winner, rank: @winning_rank, tie: @tie, winning_card_id: @winning_card_id}
   end
 
 end
