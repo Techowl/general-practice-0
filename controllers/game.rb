@@ -45,25 +45,33 @@ class Game
     elsif player_2.rank > player_1.rank
       @winner, @winning_rank = player_2.name, player_2.rank
     else
-      @winning_rank = player_1.rank
-      if player_1.cascading_ids == player_2.cascading_ids
-        @tie = true
-      else
-        player_1.cascading_ids.each_with_index do |p1_id, index|
-          p2_id = player_2.cascading_ids[index]
-          if p1_id > p2_id
-            @winner = player_1.name
-            @winning_card_id = p1_id
-            break
-          elsif p2_id > p1_id
-            @winner = player_2.name
-            @winning_card_id = p2_id
-            break
-          end
-        end
-      end
+      compare_same_rank_hands(player_1, player_2)
     end
     {winner: @winner, rank: @winning_rank, tie: @tie, winning_card_id: @winning_card_id}
+  end
+
+  def compare_same_rank_hands(player_1, player_2)
+    @winning_rank = player_1.rank
+    if player_1.cascading_ids == player_2.cascading_ids
+      @tie = true
+    else
+      iterate_over_cascading_ids(player_1, player_2)
+    end
+  end
+
+  def iterate_over_cascading_ids(player_1, player_2)
+    player_1.cascading_ids.each_with_index do |p1_id, index|
+      p2_id = player_2.cascading_ids[index]
+      if p1_id > p2_id
+        @winner = player_1.name
+        @winning_card_id = p1_id
+        return
+      elsif p2_id > p1_id
+        @winner = player_2.name
+        @winning_card_id = p2_id
+        return
+      end
+    end
   end
 
 end
