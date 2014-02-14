@@ -1,9 +1,5 @@
 class Game
 
-  HAND_NAMES = ['high card', 'pair', 'two pair', 'three of a kind',
-              'straight', 'flush', 'full house', 'four of a kind',
-              'straight flush']
-
   def initialize(text_line)
     @players = []
     @winner = nil
@@ -40,9 +36,32 @@ class Game
   end
 
   def compare_hands
-    # IMPLEMENT
-    # first compare rank; if same, compare cascading ids; if same, tie
-    # return hash with keys tie, winning_card, rank, winner
+    tie, winning_card_id = false, nil
+    player_1, player_2 = @players[0], @players[1]
+    if player_1.rank > player_2.rank
+      winner, rank = player_1.name, player_1.rank
+    elsif player_2.rank > player_1.rank
+      winner, rank = player_2.name, player_2.rank
+    else
+      rank = player_1.rank
+      if player_1.cascading_ids == player_2.cascading_ids
+        tie = true
+      else
+        player_1.cascading_ids.each_with_index do |p1_id, index|
+          p2_id = player_2.cascading_ids[index]
+          if p1_id > p2_id
+            winner = player_1.name
+            winning_card_id = p1_id if index = 0
+            break
+          elsif p2_id > p1_id
+            winner = player_2.name
+            winning_card_id = p2_id if index = 0
+            break
+          end
+        end
+      end
+    end
+    {winner: winner, rank: rank, tie: tie, winning_card_id: winning_card_id}
   end
 
 end
