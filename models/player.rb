@@ -1,7 +1,6 @@
 class Player
 
-  attr_accessor :rank
-  attr_reader :name, :hand
+  attr_reader :name, :hand, :rank, :cascading_vals
 
   VALUES_TO_NUMBERS = {'1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5,
                        '6' => 6, '7' => 7, '8' => 8, '9' => 9, 'T' => 10,
@@ -10,7 +9,7 @@ class Player
   def initialize(args)
     @name = args[:name]
     @hand = args[:hand]
-    @rank = get_hand_rank
+    @rank, @cascading_vals = get_hand_rank_and_cascading_vals
   end
 
   def to_s
@@ -19,19 +18,20 @@ class Player
 
   private
 
-  def get_hand_rank
+  def get_hand_rank_and_cascading_vals
     is_flush = get_whether_flush
     is_straight = get_whether_straight
-    breakdown_by_val = get_breakdown_by_num
-    return [8] if is_flush && is_straight
-    return [7] if breakdown_by_val == [4, 1]
-    return [6] if breakdown_by_val == [3, 2]
-    return [5] if is_flush
-    return [4] if is_straight
-    return [3] if breakdown_by_val == [3, 1, 1]
-    return [2] if breakdown_by_val == [2, 2, 1]
-    return [1] if breakdown_by_val == [2, 1, 1, 1]
-    return [0] if breakdown_by_val == [1, 1, 1, 1, 1]
+    breakdown_by_val, cascading_vals = process_card_values
+    rank = 0 if breakdown_by_val == [1, 1, 1, 1, 1]
+    rank = 1 if breakdown_by_val == [2, 1, 1, 1]
+    rank = 2 if breakdown_by_val == [2, 2, 1]
+    rank = 3 if breakdown_by_val == [3, 1, 1]
+    rank = 4 if is_straight
+    rank = 5 if is_flush
+    rank = 6 if breakdown_by_val == [3, 2]
+    rank = 7 if breakdown_by_val == [4, 1]
+    rank = 8 if is_flush && is_straight
+    return rank, cascading_vals
   end
 
   def get_whether_flush
@@ -50,18 +50,23 @@ class Player
     is_straight
   end
 
-  def get_breakdown_by_num
+  def process_card_values
     cards_by_num = Hash.new(0)
     ordered_card_nums = get_values_as_sorted_nums
     ordered_card_nums.each do |num|
       cards_by_num[num] += 1
     end
-    cards_by_num.values.sort.reverse
+    breakdown_by_val = cards_by_num.values.sort.reverse
+    cascading_vals = #
+    return breakdown_by_val, cascading_vals
   end
 
   def get_values_as_sorted_nums
     values_as_nums = self.hand.map { |card| VALUES_TO_NUMBERS[card.value] }
     values_as_nums.sort
+  end
+
+  def get_cascading_vals
   end
 
 end
