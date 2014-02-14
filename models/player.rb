@@ -10,7 +10,7 @@ class Player
   def initialize(args)
     @name = args[:name]
     @hand = args[:hand]
-    @rank = determine_hand_value
+    @rank = get_hand_rank
   end
 
   def to_s
@@ -19,21 +19,49 @@ class Player
 
   private
 
-  def determine_hand_value
-    is_flush = determine_whether_flush
-    is_straight = determine_whether_straight
-    num_same = determine_num_same
+  def get_hand_rank
+    is_flush = get_whether_flush
+    is_straight = get_whether_straight
+    breakdown_by_val = get_breakdown_by_num
+    return [8] if is_flush && is_straight
+    return [7] if breakdown_by_val == [4, 1]
+    return [6] if breakdown_by_val == [3, 2]
+    return [5] if is_flush
+    return [4] if is_straight
+    return [3] if breakdown_by_val == [3, 1, 1]
+    return [2] if breakdown_by_val == [2, 2, 1]
+    return [1] if breakdown_by_val == [2, 1, 1, 1]
+    return [0] if breakdown_by_val == [1, 1, 1, 1, 1]
   end
 
-  def determine_whether_flush
-    (self.hand[0].suit == self.hand[1].suit == self.hand[2].suit ==
-     self.hand[3].suit == self.hand[4].suit)
+  def get_whether_flush
+    suit_of_first = self.hand[0].suit
+    self.hand.all? { |card| card.suit == suit_of_first }
   end
 
-  def determine_whether_straight
+  def get_whether_straight
+    ordered_card_nums = get_values_as_sorted_nums
+    is_straight = true
+    last_num = ordered_card_nums.shift
+    ordered_card_nums.each do |num|
+      is_straight = false unless num == last_num + 1
+      last_num = num
+    end
+    is_straight
   end
 
-  def determine_num_same
+  def get_breakdown_by_num
+    cards_by_num = Hash.new(0)
+    ordered_card_nums = get_values_as_sorted_nums
+    ordered_card_nums.each do |num|
+      cards_by_num[num] += 1
+    end
+    cards_by_num.values.sort.reverse
+  end
+
+  def get_values_as_sorted_nums
+    values_as_nums = self.hand.map { |card| VALUES_TO_NUMBERS[card.value] }
+    values_as_nums.sort
   end
 
 end
