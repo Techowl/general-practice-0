@@ -58,8 +58,7 @@ class Player
 
   def organize_by_ids(num_by_card_id)
     ordered_id_num_pairs = get_ordered_id_num_pairs(num_by_card_id)
-    cascading_nums = []
-    cascading_ids = []
+    cascading_nums, cascading_ids = [], []
     ordered_id_num_pairs.each do |id, num|
       cascading_nums << num
       cascading_ids << id
